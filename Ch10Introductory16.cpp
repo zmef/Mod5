@@ -1,8 +1,7 @@
-// Ch10Introductory16.cpp - Calculates gross pay including overtime
-// Created/revised by ZMF on 4/10/25
-
 #include <iostream>
 #include <iomanip>
+#include <cmath> // For std::round
+#include <limits> // For numeric_limits
 using namespace std;
 
 // Function prototype
@@ -20,33 +19,46 @@ int main()
 
     // Get input until user enters a negative number of hours
     cout << "Enter hours worked (-1 to quit): ";
-    cin >> hoursWorked;
+    while (!(cin >> hoursWorked)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Invalid input. Please enter a valid number of hours: ";
+    }
 
     while (hoursWorked >= 0)
     {
         cout << "Enter hourly pay rate: ";
-        cin >> hourlyRate;
+        while (!(cin >> hourlyRate)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a valid hourly pay rate: ";
+        }
+
+        if (hourlyRate < 0) {
+            cout << "Hourly pay rate cannot be negative. Please try again." << endl;
+            continue;
+        }
 
         // Calculate regular pay
-        if (hoursWorked <= 37)
-        {
+        if (hoursWorked <= 37) {
             regularPay = hoursWorked * hourlyRate;
-        }
-        else
-        {
+            overtimePay = 0.0;
+        } else {
             regularPay = 37 * hourlyRate;
+            calculateOvertimePay(hoursWorked, hourlyRate, overtimePay);
         }
-
-        // Calculate overtime pay using a function
-        calculateOvertimePay(hoursWorked, hourlyRate, overtimePay);
 
         // Calculate and display gross pay
-        grossPay = regularPay + overtimePay;
+        grossPay = std::round((regularPay + overtimePay) * 100.0) / 100.0;
         cout << "Gross pay: $" << grossPay << endl << endl;
 
         // Prompt again
         cout << "Enter hours worked (-1 to quit): ";
-        cin >> hoursWorked;
+        while (!(cin >> hoursWorked)) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Invalid input. Please enter a valid number of hours: ";
+        }
     }
 
     cout << "Program ended." << endl;
@@ -56,17 +68,11 @@ int main()
 // Function to calculate overtime pay
 void calculateOvertimePay(int hoursWorked, double hourlyRate, double &overtimePay)
 {
-    overtimePay = 0.0;
-
-    if (hoursWorked > 37 && hoursWorked <= 50)
-    {
+    if (hoursWorked <= 37) {
+        overtimePay = 0.0;
+    } else if (hoursWorked <= 50) {
         overtimePay = (hoursWorked - 37) * hourlyRate * 1.5;
-    }
-    else if (hoursWorked > 50)
-    {
-        // Time and a half for hours 38–50
-        overtimePay = (13 * hourlyRate * 1.5); // 38 to 50 = 13 hours
-        // Double time for hours beyond 50
-        overtimePay += (hoursWorked - 50) * hourlyRate * 2.0;
+    } else {
+        overtimePay = (13 * hourlyRate * 1.5) + ((hoursWorked - 50) * hourlyRate * 2.0);
     }
 }
