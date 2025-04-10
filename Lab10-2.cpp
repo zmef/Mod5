@@ -1,5 +1,5 @@
 //Lab10-2.cpp - displays total owed
-//Created/revised by <your name> on <current date>
+//Created/revised by ZMF on 4/10/25
 
 #include <iostream>
 #include <iomanip>
@@ -27,20 +27,29 @@ int main()
     {
         cout << "Number of windows: ";
         cin >> numOrdered;
+
+        if (numOrdered <= 0) {
+            cout << "Invalid number of windows. Must be greater than 0." << endl;
+            return 1;
+        }
+
         cout << "Price per window: ";
         cin >> winPrice;
+
+        if (winPrice <= 0) {
+            cout << "Invalid price per window. Must be greater than 0." << endl;
+            return 1;
+        }
 
         if (option == 1)
             getRegular(numOrdered, winPrice, totalOwed);
         else
             getBoGo(numOrdered, winPrice, totalOwed);
-        //end if
 
         cout << "Total owed------> $" << totalOwed << endl << endl;
     }
     else
         cout << "Invalid option" << endl;
-    //end if
 
     return 0;
 } //end of main function
@@ -52,3 +61,15 @@ void displayOptions()
     cout << "1  Regular pricing" << endl;
     cout << "2  BOGO pricing" << endl;
 } //end displayOptions
+
+void getRegular(int windows, double price, double &total)
+{
+    total = windows * price;
+} //end getRegular
+
+void getBoGo(int windows, double price, double &total)
+{
+    int freeWindows = windows / 2; // Every second window is free
+    int paidWindows = windows - freeWindows;
+    total = paidWindows * price;
+} //end getBoGo
