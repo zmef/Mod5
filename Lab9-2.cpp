@@ -1,5 +1,5 @@
- //Lab9-2.cpp - displays two monthly car payments
- //Created/revised by ZMF on 4/10/25
+//Lab9-2.cpp - displays two monthly car payments
+//Created/revised by ZMF on 4/10/25
 
 #include <iostream>
 #include <cmath>
@@ -7,7 +7,7 @@
 using namespace std;
 
 // Function prototype
-double getPayment(int, double, int);
+double getPayment(int principal, double rate, int months);
 
 int main()
 {
@@ -40,4 +40,14 @@ int main()
     cout << "Dealer payment: $" << dealerPayment << endl;
 
     return 0;
+}
+
+// Function definition
+double getPayment(int principal, double rate, int months)
+{
+    if (rate == 0) // Handle zero interest rate case
+    {
+        return static_cast<double>(principal) / months;
+    }
+    return (principal * rate) / (1 - pow(1 + rate, -months));
 }
